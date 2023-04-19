@@ -1,7 +1,16 @@
 from transformers import pipeline
+import os
 
 ner_pipeline = pipeline("ner", model="lcampillos/roberta-es-clinical-trials-ner", tokenizer="lcampillos/roberta-es-clinical-trials-ner")
 
+# Funcion para obtener el texto del primer fichero de una carpeta
+def get_text_from_file(path):
+    files = os.listdir(path)
+    with open(os.path.join(path, files[0]), 'r', encoding='utf-8') as f:
+        text = f.read()
+    return text
+    
+    
 def extract_symptoms(text):
     symptoms = []
     results = ner_pipeline(text)
@@ -38,15 +47,22 @@ def classify_text(text):
         return "VIH positivo (síntomas relevantes)"
     else:
         return "VIH negativo"
+    
+def testManual():
+    text1 = "El paciente se presentó con fiebre y fatiga. Se sospecha que puede tener VIH debido a sus antecedentes."
+    print(extract_symptoms(text1)) # VIH negativo
 
-text1 = "El paciente se presentó con fiebre y fatiga. Se sospecha que puede tener VIH debido a sus antecedentes."
-print(classify_text(text1)) # VIH negativo
+    text2 = "La paciente tiene VIH y presenta dolor de cabeza, fatiga y sudores nocturnos."
+    print(extract_symptoms(text2)) # VIH positivo (síntomas relevantes)
 
-text2 = "La paciente tiene VIH y presenta dolor de cabeza, fatiga y sudores nocturnos."
-print(classify_text(text2)) # VIH positivo (síntomas relevantes)
+    text3 = "No hay indicios de VIH en el paciente, pero presenta pérdida de peso y sudores nocturnos, fiebre, dolor de cabeza y fatiga."
+    print(extract_symptoms(text3)) # VIH negativo
 
-text3 = "No hay indicios de VIH en el paciente, pero presenta pérdida de peso y sudores nocturnos, fiebre, dolor de cabeza y fatiga."
-print(classify_text(text3)) # VIH negativo
+    text4 = "El paciente africano se presentó con dolor de cabeza y fiebre. Se sospecha de VIH."
+    extract_symptoms(text4) # VIH negativo
+    
+def testNota1():
+    text = get_text_from_file('datasets')
+    print(extract_symptoms(text))
 
-text4 = "El paciente africano se presentó con dolor de cabeza y fiebre. Se sospecha de VIH."
-print(classify_text(text4)) # VIH negativo
+testNota1()
