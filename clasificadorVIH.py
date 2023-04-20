@@ -12,23 +12,39 @@ def get_text_from_file(path):
     
     
 def extract_symptoms(text):
+    # Lista donde se guardarán los síntomas extraídos
     symptoms = []
+    # Ejecutar pipeline de NER
     results = ner_pipeline(text)
-    
+
+    # Recorrer los resultados de NER
     i = 0
     while i < len(results):
+        # Si se detecta el inicio de una entidad de tipo DISO (enfermedad)
         if results[i]['entity'] == 'B-DISO':
-            # Buscar entidades adyacentes con el mismo prefijo IOB
-            prefix = results[i]['entity']
             j = i + 1
+            # Buscar el final de la entidad DISO
             while j < len(results) and results[j]['entity'] == 'I-DISO':
                 j += 1
-            # Fusionar las entidades adyacentes en una sola
-            symptom = ' '.join([result['word'].lstrip('Ġ') for result in results[i:j]]) # los síntomas se guardarán correctamente sin los símbolos "Ġ" al principio de cada palabra.
+
+            # Extraer subcadena del síntoma y eliminar prefijo 'Ġ' si existe
+            symptom = text[results[i]['start']:results[j-1]['end']].lstrip('Ġ')
+            # Verificar si es necesario agregar espacios entre palabras
+            for k in range(i+1, j):
+                # Si hay un espacio entre las palabras de las entidades DISO, agregar espacio
+                if results[k]['start'] > results[k-1]['end']:
+                    symptom += ' ' + text[results[k-1]['end']:results[k]['start']].lstrip('Ġ')
+
+            # Agregar síntoma a la lista
             symptoms.append(symptom)
             i = j
         else:
             i += 1
+
+    # Eliminar espacios en blanco innecesarios
+    for i in range(len(symptoms)):
+        symptoms[i] = symptoms[i].strip()
+
     return symptoms
 
 
