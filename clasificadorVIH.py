@@ -1,12 +1,13 @@
 from transformers import pipeline
 import os
+import re
 
 ner_pipeline = pipeline("ner", model="lcampillos/roberta-es-clinical-trials-ner", tokenizer="lcampillos/roberta-es-clinical-trials-ner")
 
 # Funcion para obtener el texto del primer fichero de una carpeta
-def get_text_from_file(path):
+def get_text_from_file(path, number):
     files = os.listdir(path)
-    with open(os.path.join(path, files[1]), 'r', encoding='utf-8') as f:
+    with open(os.path.join(path, files[number]), 'r', encoding='utf-8') as f:
         text = f.read()
     return text
     
@@ -48,76 +49,123 @@ def extract_symptoms(text):
     return symptoms
 
 
-def detect_sida(text):
+def analyze_text(text):
+    # Convertir el texto a minúsculas
+    text = text.lower()
     
-    
-    symptoms = extract_symptoms(text)
-    sida = 0
-    
-    group1 = ['neumonía recurrente', 
-              'bacteriemia recurrente por salmonella', 
-              'tuberculosis pulmonar', 
-              'tuberculosis extrapulmonar', 
-              'micobacterias atípicas diseminadas', 
-              'candidiasis esofágica', 
-              'candidiasis bronquial', 
-              'candidiasis traqueal', 
-              'candidiasis pulmonar', 
-              'neumonía por pneumocystis jirovecii', 
-              'neumonía por pneumocystis carinii', 
-              'histoplasmosis extrapulmonar', 
-              'coccidioidomicosis extrapulmonar', 
-              'criptococosis extrapulmonar', 
-              'criptosporidiosis', 
-              'infecciones por virus del herpes simple', 
-              'infecciones por citomegalovirus', 
-              'toxoplasmosis cerebral', 
-              'leucoencefalopatía multifocal progresiva', 
-              'sarcoma de kaposi', 
-              'linfomas', 
-              'carcinoma de cérvix uterino invasivo']
-    
-    group2 = ["Angiomatosis bacilar",
-           "Candidiasis orofaringea", "muguet",
-           "Candidiasis vulvovaginal; persistente, frecuente, o que no responde al tratamiento",
-           "Displasia cervical (moderada o severa)/carcinoma cervical in situ",
-           "Síndrome constitucional, fiebre persistente (38.5°C) y/o diarrea crónica de >1 mes de duración (COMBINACIÓN)",
-           "Leucoplasia oral vellosa",
-           "Herpes zoster, al menos 2 episodios distintos o más de un dermatoma",
-           "Púrpura trombocitopénica idiopática",
-           "Listeriosis",
-           "Enfermedad pélvica inflamatoria, abscesos tuboováricos",
-           "Neuropatía periférica"]
 
-    group3 = ["Cáncer de pulmón primario",
-           "Meningitis linfocítica",
-           "Psoriasis grave o atípica",
-           "Síndrome de Guillain-Barré",
-           "Mononeuritis",
-           "Demencia subcortical",
-           "Esclerosis múltiple",
-           "Insuficiencia renal crónica idiopática",
-           "Hepatitis A",
-           "Neumonía adquirida en la comunidad",
-           "Dermatitis atópica"]
+    # Expresión regular para reconocer "positivo", "VIH" y sus variantes
+    pattern = r"(seropositivo|infectado|con VIH|VIH\+|VIH positivo|VIH positiva|síndrome de inmunodeficiencia adquirida)"
+    # Buscar la expresión regular en el texto
+    match = re.search(pattern, text, re.IGNORECASE)
+    if match:
+        # Si se encuentra la expresión regular, el resultado es positivo
+        return True
+    
+    # Expresión regular para reconocer "antecedentes", "VIH" y sus variantes
+    pattern = r"(antecedentes|historial|previamente diagnosticado|diagnóstico previo) .* (VIH|vih|HIV|hiv)"
+    # Buscar la expresión regular en el texto
+    match = re.search(pattern, text, re.IGNORECASE)
+    if match:
+        # Si se encuentra la expresión regular, el resultado es positivo
+        return True
+    
+    # Expresión regular para reconocer "en tratamiento", "SIDA" y sus variantes
+    pattern = r"(en tratamiento|bajo tratamiento|recibe tratamiento) .* (SIDA|síndrome de inmunodeficiencia adquirida)"
+    # Buscar la expresión regular en el texto
+    match = re.search(pattern, text, re.IGNORECASE)
+    if match:
+        # Si se encuentra la expresión regular, el resultado es positivo
+        return True
+    
+    # Si no se encuentra ninguna expresión regular, el resultado es negativo
+    return False
 
+
+
+def detect_sida(text): 
     
-    # Buscamos enfermedades definitorias de sida (Grupo 1)
-    for symptom in symptoms:
-        if symptom in group1:
-            sida += 4.5
-    
-    # Buscamos enfermedades indicadoras de sida (Grupo 2)
-    for symptom in symptoms:
-        if symptom in group2:
-            sida += 3.5
-    
-    # Buscamos otras enfermedades indicadoras de sida (Grupo 3)
-    for symptom in symptoms:
-        if symptom in group3:
-           sida += 2.5
-    
-    return 'Probabilidad de padecer sida: ' + str(sida *20) + '% \n Sintomas: ' + str(symptoms)
+    if analyze_text(text):
+        return True
+    else: 
+        symptoms = extract_symptoms(text)
+        sida = 0
+        
+        symptomsg1 = []
+        group1 = ['neumonía recurrente', 
+                'bacteriemia recurrente por salmonella', 
+                'tuberculosis pulmonar', 
+                'tuberculosis extrapulmonar', 
+                'micobacterias atípicas diseminadas', 
+                'candidiasis esofágica', 
+                'candidiasis bronquial', 
+                'candidiasis traqueal', 
+                'candidiasis pulmonar', 
+                'neumonía por pneumocystis jirovecii', 
+                'neumonía por pneumocystis carinii', 
+                'histoplasmosis extrapulmonar', 
+                'coccidioidomicosis extrapulmonar', 
+                'criptococosis extrapulmonar', 
+                'criptosporidiosis', 
+                'infecciones por virus del herpes simple', 
+                'infecciones por citomegalovirus', 
+                'toxoplasmosis cerebral', 
+                'leucoencefalopatía multifocal progresiva', 
+                'sarcoma de kaposi', 
+                'linfomas', 
+                'carcinoma de cérvix uterino invasivo']
+        
+        symptomsg2 = []
+        group2 = ["Angiomatosis bacilar",
+            "Candidiasis orofaringea", "muguet",
+            "Candidiasis vulvovaginal; persistente, frecuente, o que no responde al tratamiento",
+            "Displasia cervical (moderada o severa)/carcinoma cervical in situ",
+            "Síndrome constitucional, fiebre persistente (38.5°C) y/o diarrea crónica de >1 mes de duración (COMBINACIÓN)",
+            "Leucoplasia oral vellosa",
+            "Herpes zoster, al menos 2 episodios distintos o más de un dermatoma",
+            "Púrpura trombocitopénica idiopática",
+            "Listeriosis",
+            "Enfermedad pélvica inflamatoria, abscesos tuboováricos",
+            "Neuropatía periférica"]
+
+        symptomsg3 = []
+        group3 = ["Cáncer de pulmón primario",
+            "Meningitis linfocítica",
+            "Psoriasis grave o atípica",
+            "Síndrome de Guillain-Barré",
+            "Mononeuritis",
+            "Demencia subcortical",
+            "Esclerosis múltiple",
+            "Insuficiencia renal crónica idiopática",
+            "Hepatitis A",
+            "Neumonía adquirida en la comunidad",
+            "Dermatitis atópica"]
+
+        
+        # Buscamos enfermedades definitorias de sida (Grupo 1)
+        for symptom in symptoms:
+            if symptom in group1:
+                sida += 4.5
+                symptomsg1.append(symptom)
+        
+        # Buscamos enfermedades indicadoras de sida (Grupo 2)
+        for symptom in symptoms:
+            if symptom in group2:
+                sida += 3.5
+                symptomsg2.append(symptom)
+        
+        # Buscamos otras enfermedades indicadoras de sida (Grupo 3)
+        for symptom in symptoms:
+            if symptom in group3:
+                sida += 2.5
+                symptomsg3.append(symptom)
+        
+        print('Probabilidad de padecer sida: ' + str(sida *20) + '% \nSíntomas del grupo 1: ' + str(symptomsg1) + '\nSíntomas del grupo 2: ' + str(symptomsg2) + '\nSíntomas del grupo 3: ' + str(symptomsg3) + '\nSintomas totales: ' + str(symptoms))
+        if sida >= 4.5:
+            return True
+        else :
+            return False
+
 
     
 def testManual():
@@ -134,7 +182,10 @@ def testManual():
     print(detect_sida(text4)) # VIH negativo
     
 def testNota1():
-    text = get_text_from_file('datasets')
+    text = get_text_from_file('datasets', 5)
     print(detect_sida(text))
 
+
+    
 testNota1()
+
