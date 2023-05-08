@@ -55,7 +55,7 @@ def analyze_text(text):
     
 
     # Expresión regular para reconocer "positivo", "VIH" y sus variantes
-    pattern = r"(seropositivo|infectado|con VIH|VIH\+|VIH positivo|VIH positiva|síndrome de inmunodeficiencia adquirida)"
+    pattern = r"(seropositivo|VIH estadio|VIH estadío|infectado de VIH|infectado con VIH|infección de VIH|infección con VIH|infección por VIH|infección VIH diagnosticada|VIH\+|VIH \+|HIV\+|HIV \+|VIH positivo|VIH positiva|positivo en VIH|positivo para VIH|síndrome de inmunodeficiencia adquirida)"
     # Buscar la expresión regular en el texto
     match = re.search(pattern, text, re.IGNORECASE)
     if match:
@@ -63,7 +63,7 @@ def analyze_text(text):
         return True
     
     # Expresión regular para reconocer "antecedentes", "VIH" y sus variantes
-    pattern = r"(antecedentes|historial|previamente diagnosticado|diagnóstico previo) .* (VIH|vih|HIV|hiv)"
+    pattern = r"(antecedentes|historial|previamente diagnosticado|diagnóstico previo|diagnóstico) .{0,20} (VIH|vih|HIV|hiv|SIDA|sida)"
     # Buscar la expresión regular en el texto
     match = re.search(pattern, text, re.IGNORECASE)
     if match:
@@ -71,7 +71,7 @@ def analyze_text(text):
         return True
     
     # Expresión regular para reconocer "en tratamiento", "SIDA" y sus variantes
-    pattern = r"(en tratamiento|bajo tratamiento|recibe tratamiento) .* (SIDA|síndrome de inmunodeficiencia adquirida)"
+    pattern = r"(en tratamiento|bajo tratamiento|recibe tratamiento) .* (SIDA|síndrome de inmunodeficiencia adquirida|antirretroviral)"
     # Buscar la expresión regular en el texto
     match = re.search(pattern, text, re.IGNORECASE)
     if match:
@@ -86,7 +86,7 @@ def analyze_text(text):
 def detect_sida(text): 
     
     if analyze_text(text):
-        return True
+       return True
     else: 
         symptoms = extract_symptoms(text)
         sida = 0
@@ -168,24 +168,18 @@ def detect_sida(text):
 
 
     
-def testManual():
-    text1 = "El paciente se presentó con fiebre y fatiga. Se sospecha que puede tener VIH debido a sus antecedentes."
-    print(detect_sida(text1)) # VIH negativo
-
-    text2 = "La paciente tiene VIH y presenta dolor de cabeza, fatiga y sudores nocturnos, Candidiasis orofaringea."
-    print(detect_sida(text2)) # VIH positivo (síntomas relevantes)
-
-    text3 = "No hay indicios de VIH en el paciente, pero presenta pérdida de peso y sudores nocturnos, fiebre, dolor de cabeza y fatiga, tuberculosis pulmonar."
-    print(detect_sida(text3)) # VIH positivoo (definitorio)
-
-    text4 = "El paciente africano se presentó con dolor de cabeza y fiebre. Se sospecha de VIH."
-    print(detect_sida(text4)) # VIH negativo
     
 def testNota1():
-    text = get_text_from_file('datasets', 5)
+    text = get_text_from_file('datasets', 29)
     print(detect_sida(text))
+
+# Funcion que hace una lista con los ficheros de un directorio
+def get_files_from_dir(dir):
+    files = []
+    for file in os.listdir(dir):
+        files.append(file)
+    return files
 
 
     
 testNota1()
-
