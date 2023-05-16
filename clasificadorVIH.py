@@ -12,7 +12,6 @@ def get_text_from_file(path, number):
         text = f.read()
     return text
     
-    
 def extract_symptoms(text):
     # Lista donde se guardarán los síntomas extraídos
     symptoms = []
@@ -137,7 +136,7 @@ def group4(text):
     
     match = re.search(pattern, text)
     if match:
-        age = int(match.group(1))
+        age = int(match.group(1)) # Almacena la primera aparición del patrón
         
     if age >= 20 and age <= 24:
         points += 3.2
@@ -155,7 +154,7 @@ def group4(text):
         points += 2.8
     
     # Expresión regular para reconocer "homosexual", "homosexualidad", "hombre que tiene sexo con hombres", "HSH" y sus variantes
-    pattern = r"(homosexual|homosexualidad|hombre que tiene sexo con hombres|HSH)"
+    pattern = r"(homosexual|homosexualidad|hombre que tiene sexo con hombres|hsh)"
     # Buscar la expresión regular en el texto
     match = re.search(pattern, text, re.IGNORECASE)
     if match:
@@ -269,7 +268,6 @@ def group6(symptoms):
     'síndrome mononucleósido': 4.8
 }
 
-
     points = 0
     # Buscamos enfermedades definitorias de sida (Grupo 1)
     for symptom in symptoms:
@@ -307,48 +305,30 @@ def group8(symptoms):
             match.append(symptom)
     return match
 
-def detect_sida(text): 
+def detect_vih(text): 
     text = text.lower()
     symptoms = extract_symptoms(text)
-    sida = 0
+    vih = 0
     
     symptomsg1 = group1(symptoms) # enfermedades definitorias de sida
     symptomsg2 = group2(symptoms) # enfermedades indicadoras de sida
     symptomsg3 = group3(symptoms) # otras engfermedades indicadoras de sida
-
     sociodemographic = group4(text)
     country = group5(text)
     symptoms6 = group6(symptoms) # signos y síntomas de infección aguda por VIH
     laboratory = group7(symptoms, text) # alteraciones de laboratorio
     std = group8(symptoms) # enfermedades de transmisión sexual
     
-    sida = len(symptomsg1) * (4.5 * 2) + len(symptomsg2) * 3.5 + len(symptomsg3) * 2.5 + sociodemographic + country + symptoms6 + laboratory + len(std) * 4.3
+    vih = len(symptomsg1) * (4.5 * 2) + len(symptomsg2) * 3.5 + len(symptomsg3) * 2.5 + sociodemographic + country + symptoms6 + laboratory + len(std) * 4.3
     
     
     # print('Probabilidad de padecer sida: ' + str(sida *10) + '% \nSíntomas del grupo 1: ' + str(symptomsg1) + '\nSíntomas del grupo 2: ' + str(symptomsg2) + '\nSíntomas del grupo 3: ' + str(symptomsg3))
     # print('Sintomas totales: ' + str(symptoms))
-    print(
-        str(sida))
-    if sida >= 10:
+    print(str(vih))
+    if vih >= 10:
         return True
     else :
         return False
-
-
     
-    
-def testNota1():
-    for i in range(50, 70):
-        text = get_text_from_file('datasets', i)
-        detect_sida(text)
-
-# Funcion que hace una lista con los ficheros de un directorio
-def get_files_from_dir(dir):
-    files = []
-    for file in os.listdir(dir):
-        files.append(file)
-    return files
-
-
-    
-testNota1()
+text = get_text_from_file('datasets', 0)
+detect_vih(text)
