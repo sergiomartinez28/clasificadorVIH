@@ -1,3 +1,4 @@
+import subprocess
 from transformers import pipeline
 import os
 import re
@@ -51,28 +52,32 @@ def extract_symptoms(text):
 
 
 def group1(symptoms):
-    indicators = ['neumonía recurrente', 
-            'bacteriemia recurrente por salmonella', ''
-            'tuberculosis pulmonar', 
-            'tuberculosis extrapulmonar', 
-            'micobacterias atípicas diseminadas', 
-            'candidiasis esofágica', 
-            'candidiasis bronquial', 
-            'candidiasis traqueal', 
-            'candidiasis pulmonar', 
-            'neumonía por pneumocystis jirovecii', 
-            'neumonía por pneumocystis carinii', 
-            'histoplasmosis extrapulmonar', 
-            'coccidioidomicosis extrapulmonar', 
-            'criptococosis extrapulmonar', 
-            'criptosporidiosis', 
-            'herpes simple', 
-            'citomegalovirus', 
-            'toxoplasmosis cerebral', 
-            'leucoencefalopatía multifocal progresiva', 
-            'sarcoma de kaposi', 
-            'linfomas', 'linfoma'
-            'carcinoma de cérvix uterino invasivo']
+    indicators = {
+        'neumonía recurrente': 4.2,
+        'bacteriemia recurrente por salmonella': 4.5,
+        'tuberculosis pulmonar': 4.5,
+        'tuberculosis extrapulmonar': 4.5, #
+        'micobacterias atípicas diseminadas': 4.8,
+        'candidiasis esofágica': 4.5,
+        'candidiasis bronquial': 4.5, 
+        'candidiasis traqueal': 4.5, 
+        'candidiasis pulmonar': 4.5, 
+        'neumonía por pneumocystis jirovecii': 5.0,
+        'neumonía por pneumocystis carinii': 5.0, 
+        'histoplasmosis extrapulmonar': 4.8,
+        'coccidioidomicosis extrapulmonar': 4.7,
+        'criptococosis extrapulmonar': 4.8,
+        'criptosporidiosis': 4.8,
+        'herpes simple': 4.3,
+        'citomegalovirus': 4.7,
+        'toxoplasmosis cerebral': 4.8,
+        'leucoencefalopatía multifocal progresiva': 4.7,
+        'sarcoma de kaposi': 5.0,
+        'linfoma de burkitt': 4.8,
+        'linfoma cerebral primario': 4.8,
+        'linfoma inmunoblástico': 4.8,
+        'carcinoma de cérvix uterino invasivo': 4.5
+    }
     match = []
     # Buscamos enfermedades definitorias de sida (Grupo 1)
     for symptom in symptoms:
@@ -81,24 +86,24 @@ def group1(symptoms):
     return match
 
 def group2(symptoms):
-    indicators = [
-    "angiomatosis bacilar",
-    "candidiasis orofaringea",
-    "muguet",
-    "candidiasis vulvovaginal",
-    "displasia cervical"
-    "carcinoma cervical",
-    "síndrome constitucional",
-    "fiebre persistente",
-    "diarrea crónica ", # de más de un mes de duración, en combinación con la fiebre
-    "leucoplasia oral vellosa",
-    "herpes zoster",
-    "púrpura trombocitopénica idiopática",
-    "listeriosis",
-    "enfermedad pélvica inflamatoria", 
-    "abscesos tuboováricos",
-    "neuropatía periférica"
-]
+    indicators = {
+        'angiomatosis bacilar': 3.7,
+        'candidiasis orofaringea': 3.5,
+        'muguet': 3.5,
+        'candidiasis vulvovaginal': 3.2,
+        'displasia cervical': 3.7,
+        'carcinoma cervical': 3.7,
+        'síndrome constitucional': 4.0,
+        'fiebre persistente': 4.0,
+        'diarrea crónica': 4.0,
+        'leucoplasia oral vellosa': 3.8,
+        'herpes zoster': 3.7,
+        'púrpura trombocitopénica idiopática': 3.0,
+        'listeriosis': 2.8,
+        'enfermedad pélvica inflamatoria': 3.3,
+        'abscesos tuboováricos': 3.3,
+        'neuropatía periférica': 3.0
+    }
 
     match = []
     # Buscamos enfermedades indicadoras de sida (Grupo 2)
@@ -108,19 +113,24 @@ def group2(symptoms):
     return match
 
 def group3(symptoms):
-    indicators = indicators = [
-    "cáncer de pulmón primario",
-    "meningitis linfocítica",
-    "psoriasis grave o atípica",
-    "síndrome de guillain-barré",
-    "mononeuritis",
-    "demencia subcortical",
-    "esclerosis múltiple",
-    "insuficiencia renal crónica idiopática",
-    "hepatitis a",
-    "neumonía adquirida en la comunidad",
-    "dermatitis atópica"
-]
+    indicators = {
+        'angiomatosis bacilar': 3.7,
+        'candidiasis orofaringea': 3.5,
+        'muguet': 3.5,
+        'candidiasis vulvovaginal': 3.2,
+        'displasia cervical': 3.7,
+        'carcinoma cervical': 3.7,
+        'síndrome constitucional': 4.0,
+        'fiebre persistente': 4.0,
+        'diarrea crónica': 4.0,
+        'leucoplasia oral vellosa': 3.8,
+        'herpes zoster': 3.7,
+        'púrpura trombocitopénica idiopática': 3.0,
+        'listeriosis': 2.8,
+        'enfermedad pélvica inflamatoria': 3.3,
+        'abscesos tuboováricos': 3.3,
+        'neuropatía periférica': 3.0
+    }
 
     match = []
     # Buscamos otras enfermedades indicadoras de sida (Grupo 3)
@@ -269,24 +279,35 @@ def group6(symptoms):
 }
 
     points = 0
+    detected_symptoms = []
     # Buscamos enfermedades definitorias de sida (Grupo 1)
     for symptom in symptoms:
         if symptom in indicators:
+            detected_symptoms.append(symptom)
             points += indicators[symptom]
-    return points
+    return detected_symptoms, points
 
 def group7(symptoms, text):
+    detected_symptoms = []
     points = 0
+
     if 'leucopenia' in symptoms or 'leucocitos <3500 cel/ml' in text:
         points += 3.3
+        detected_symptoms.append('leucopenia' if 'leucopenia' in symptoms else 'leucocitos <3500 cel/ml')
+
     if 'trombopenia' in symptoms or 'plaquetas <100000 cel/ml' in text:
         points += 2.5
+        detected_symptoms.append('trombopenia' if 'trombopenia' in symptoms else 'plaquetas <100000 cel/ml')
+
     if 'linfopenia <500' in text:
         points += 0.7
+        detected_symptoms.append('linfopenia <500')
+
     if 'hipergammaglobulinemia' in symptoms:
         points += 0.5
+        detected_symptoms.append('hipergammaglobulinemia')
 
-    return points
+    return detected_symptoms, points
 
 def group8(symptoms):
     match = []
@@ -305,6 +326,56 @@ def group8(symptoms):
             match.append(symptom)
     return match
 
+def find_sentences(text, symptom):
+    # Expresión regular para reconocer frases que contienen el síntoma
+    pattern = r"([^.]*" + symptom + "[^.]*\.)"
+    # Buscar la expresión regular en el texto
+    match = re.search(pattern, text, re.IGNORECASE)
+    if match:
+        return match.group(1)
+    else:
+        return ""
+
+def prepare_negex_input(symptoms, text):
+    relative_path = "NegEx-MES-master\\smn\\in\\in.txt"
+    file_path = os.path.join(os.getcwd(), relative_path)
+    
+    with open(file_path, 'w') as file:
+        for i, symptom in enumerate(symptoms):
+            sentence = find_sentences(text, symptom)
+            if sentence:
+                sanitized_sentence = sentence.replace("\n", " ").replace("\r", " ")
+                file.write(f"{i}\t{symptom}\t\"{sanitized_sentence}\"\n")
+
+def execute_negex():
+    # Guardar el directorio actual para poder volver más tarde
+    directorio_original = os.getcwd()
+    
+    # Cambiar al directorio desde donde se debe ejecutar el comando Java
+    os.chdir("NegEx-MES-master/smn/main")
+    
+    comando_java = "java -jar smn.jar"
+    
+    try:
+        # Ejecutar el comando Java sin especificar cwd en subprocess.run
+        resultado = subprocess.run(comando_java, shell=True, check=True)
+        print("El comando se ejecutó exitosamente:", resultado)
+    except subprocess.CalledProcessError as e:
+        print(f"Error al ejecutar el comando: {e}")
+    finally:
+        # Volver al directorio original
+        os.chdir(directorio_original)
+        
+def process_negex_output():
+    post_negex_symptoms = set()
+    with open('NegEx-MES-master\smn\out\callKit.result', 'r') as file:
+        for line in file:
+            parts = line.strip().split('\t')
+            if len(parts) >= 5 and parts[3] != "Negated":
+                post_negex_symptoms.add(parts[1])
+    return post_negex_symptoms
+
+
 def detect_vih(text): 
     text = text.lower()
     symptoms = extract_symptoms(text)
@@ -313,22 +384,37 @@ def detect_vih(text):
     symptomsg1 = group1(symptoms) # enfermedades definitorias de sida
     symptomsg2 = group2(symptoms) # enfermedades indicadoras de sida
     symptomsg3 = group3(symptoms) # otras engfermedades indicadoras de sida
-    sociodemographic = group4(text)
-    country = group5(text)
-    symptoms6 = group6(symptoms) # signos y síntomas de infección aguda por VIH
-    laboratory = group7(symptoms, text) # alteraciones de laboratorio
+    p4 = group4(text)
+    p5 = group5(text)
+    symptoms6, p6 = group6(symptoms) # signos y síntomas de infección aguda por VIH
+    symptoms7, p7 = group7(symptoms, text) # alteraciones de laboratorio
     std = group8(symptoms) # enfermedades de transmisión sexual
     
-    vih = len(symptomsg1) * (4.5 * 2) + len(symptomsg2) * 3.5 + len(symptomsg3) * 2.5 + sociodemographic + country + symptoms6 + laboratory + len(std) * 4.3
+    symptons_filtered = symptomsg1 + symptomsg2 + symptomsg3 + symptoms6 + symptoms7 + std
+    #prepare_negex_input(symptons_filtered, text)  # Prepara el archivo de entrada para NegEx-MES
     
-    
-    # print('Probabilidad de padecer sida: ' + str(sida *10) + '% \nSíntomas del grupo 1: ' + str(symptomsg1) + '\nSíntomas del grupo 2: ' + str(symptomsg2) + '\nSíntomas del grupo 3: ' + str(symptomsg3))
-    # print('Sintomas totales: ' + str(symptoms))
-    print(str(vih))
-    if vih >= 10:
-        return True
-    else :
-        return False
-    
-text = get_text_from_file('datasets', 0)
-detect_vih(text)
+    # execute_negex()  # Ejecuta NegEx-MES
+    # post_negex_symptoms = process_negex_output()  # Procesa la salida para obtener los síntomas negados
+
+    vih = 0
+    # for symptom in symptons_filtered:
+    #     #print(symptom)
+    #     if symptom not in post_negex_symptoms:
+    #         #print(f"{symptom} está negado.")
+    #         continue  # No se incluye en el cálculo si está negado
+
+        # sentence = find_sentences(text, symptom)
+        # if sentence != "":
+        #     print(sentence)
+        #     #vih += calculate_symptom_score(symptom)  # Calcula y añade la puntuación del síntoma
+        # else: 
+        #     print("No se ha encontrado la frase")
+
+    # Incluye p4, p5, p6, p7 en la puntuación
+    vih += p4 + p5 + p6 + p7
+    print(vih)
+    return vih >= 8
+ 
+for i in range(0, 100):   
+    text = get_text_from_file('datasets', i)
+    detect_vih(text)

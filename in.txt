@@ -1,0 +1,9 @@
+0	citomegalovirus	"
+
+se decide ingreso y durante su estancia en el hospital se realiza:
+analítica general incluyendo: hemograma; bioquímica con función renal, hepática e iones; tirotropina; serologías de virus de hepatitis a, b y c, parvovirus b19, campylobacter jejuni, treponema pallidum, borrelia burgdorferi, citomegalovirus, herpes simple, vih, rubeola y varicela-zóster; ana; anticuerpos antimog anticuerpos antigangliósidos: todo ello normal o negativo."
+1	herpes simple	"
+
+se decide ingreso y durante su estancia en el hospital se realiza:
+analítica general incluyendo: hemograma; bioquímica con función renal, hepática e iones; tirotropina; serologías de virus de hepatitis a, b y c, parvovirus b19, campylobacter jejuni, treponema pallidum, borrelia burgdorferi, citomegalovirus, herpes simple, vih, rubeola y varicela-zóster; ana; anticuerpos antimog anticuerpos antigangliósidos: todo ello normal o negativo."
+2	síndrome de guillain-barré	" ante los hallazgos, su médico decide derivarlo a urgencias del hospital para valoración de pruebas complementarias y descartar posible síndrome de guillain-barré."
