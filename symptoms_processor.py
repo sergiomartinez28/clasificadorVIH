@@ -5,12 +5,12 @@ class SymptomsProcessor:
     def __init__(self): 
         self.nlp = spacy.load("es_core_news_sm")
     
-    def group1(symptoms):
+    def group1(self, symptoms):
         indicators = {
             'neumonía recurrente': 4.2,
             'bacteriemia recurrente por salmonella': 4.5,
             'tuberculosis pulmonar': 4.5,
-            'tuberculosis extrapulmonar': 4.5, #
+            'tuberculosis extrapulmonar': 4.5, 
             'micobacterias atípicas diseminadas': 4.8,
             'candidiasis esofágica': 4.5,
             'candidiasis bronquial': 4.5, 
@@ -32,14 +32,15 @@ class SymptomsProcessor:
             'linfoma inmunoblástico': 4.8,
             'carcinoma de cérvix uterino invasivo': 4.5
         }
-        match = []
-        # Buscamos enfermedades definitorias de sida (Grupo 1)
-        for symptom in symptoms:
-            if symptom in indicators:
-                match.append(symptom)
-        return match
+        matches = set()
+        for symptom_received in symptoms:
+            for indicator_symptom, score in indicators.items():
+                if indicator_symptom.lower() in symptom_received.lower():
+                    matches.add((indicator_symptom, score))
+                    break
+        return matches
 
-    def group2(symptoms):
+    def group2(self, symptoms):
         indicators = {
             'angiomatosis bacilar': 3.7,
             'candidiasis orofaringea': 3.5,
@@ -58,42 +59,39 @@ class SymptomsProcessor:
             'abscesos tuboováricos': 3.3,
             'neuropatía periférica': 3.0
         }
+        matches = set()
+        for symptom_received in symptoms:
+            for indicator_symptom, score in indicators.items():
+                if indicator_symptom.lower() in symptom_received.lower():
+                    matches.add((indicator_symptom, score))
+                    break
+        return matches
 
-        match = []
-        # Buscamos enfermedades indicadoras de sida (Grupo 2)
-        for symptom in symptoms:
-            if symptom in indicators:
-                match.append(symptom)
-        return match
-
-    def group3(symptoms):
+    def group3(self, symptoms):
         indicators = {
-            'angiomatosis bacilar': 3.7,
-            'candidiasis orofaringea': 3.5,
-            'muguet': 3.5,
-            'candidiasis vulvovaginal': 3.2,
-            'displasia cervical': 3.7,
-            'carcinoma cervical': 3.7,
-            'síndrome constitucional': 4.0,
-            'fiebre persistente': 4.0,
-            'diarrea crónica': 4.0,
-            'leucoplasia oral vellosa': 3.8,
-            'herpes zoster': 3.7,
-            'púrpura trombocitopénica idiopática': 3.0,
-            'listeriosis': 2.8,
-            'enfermedad pélvica inflamatoria': 3.3,
-            'abscesos tuboováricos': 3.3,
-            'neuropatía periférica': 3.0
+            'cáncer de pulmón primario': 2.5,
+            'meningitis linfocítica': 3.2,
+            'psoriasis grave': 2.8,
+            'psoriasis atípica': 2.8,
+            'síndrome de guillain-barré': 2.3,
+            'mononeuritis': 2.2,
+            'demencia subcortical': 2.5,
+            'esclerosis múltiple': 2.5,
+            'insuficiencia renal crónica idiopática': 2.0,
+            'hepatitis a': 2.7,
+            'neumonía adquirida en la comunidad': 2.5,
+            'dermatitis atópica': 2.2
         }
 
-        match = []
-        # Buscamos otras enfermedades indicadoras de sida (Grupo 3)
-        for symptom in symptoms:
-            if symptom in indicators:
-                match.append(symptom)
-        return match
+        matches = set()
+        for symptom_received in symptoms:
+            for indicator_symptom, score in indicators.items():
+                if indicator_symptom.lower() in symptom_received.lower():
+                    matches.add((indicator_symptom, score))
+                    break
+        return matches
 
-    def group4(text):
+    def group4(self, text):
         pattern = r"(\d{1,2}) años"
         age = 0
         points = 0
@@ -147,7 +145,7 @@ class SymptomsProcessor:
         
         return points
 
-    def group5(text):
+    def group5(self, text):
         nlp = spacy.load("es_core_news_sm")
         # Aplicar el ner al texto
         doc = nlp(text)
@@ -197,104 +195,169 @@ class SymptomsProcessor:
         else: 
             return 1.3 # Si no se encuentra el país, se asume que es España
 
-    def group6(symptoms):
+    def group6(self, symptoms):
 
         indicators = {
-        'úlceras mucocutáneas': 3.7,
-        'úlceras orales': 3.7,
-        'úlceras labiales': 3.7,
-        'úlceras yugales': 3.7,
-        'úlceras bucales': 3.7,
-        'úlceras faríngeas': 3.7,
-        'úlceras anales': 3.7,
-        'úlceras genitales': 3.7,
-        'exantema': 2.8,
-        'rash cutáneo': 2.8,
-        'erupción cutánea': 2.8,
-        'mialgias': 1.7,
-        'artralgias': 1.7,
-        'anorexia': 2.7,
-        'pérdida de peso injustificada': 2.7,
-        'fiebre': 2.8,
-        'manifestaciones graves a nivel del sistema nervioso central': 3.5,
-        'meningitis': 3.5,
-        'encefalitis': 3.5,
-        'fatiga': 2,
-        'malestar': 2,
-        'astenia': 2,
-        'cefalea': 1.7,
-        'linfadenopatía periférica': 3.5,
-        'adenopatías': 3.5,
-        'faringitis': 2.5,
-        'alteraciones gastrointestinales': 2.8,
-        'diarrea': 2.8,
-        'mononucleosis': 4.8,
-        'síndrome mononucleósido': 4.8
-    }
+            'úlceras mucocutáneas': 3.7,
+            'úlceras orales': 3.7,
+            'úlceras labiales': 3.7,
+            'úlceras yugales': 3.7,
+            'úlceras bucales': 3.7,
+            'úlceras faríngeas': 3.7,
+            'úlceras anales': 3.7,
+            'úlceras genitales': 3.7,
+            'exantema': 2.8,
+            'rash cutáneo': 2.8,
+            'erupción cutánea': 2.8,
+            'mialgias': 1.7,
+            'artralgias': 1.7,
+            'anorexia': 2.7,
+            'pérdida de peso injustificada': 2.7,
+            'fiebre': 2.8,
+            'manifestaciones graves a nivel del sistema nervioso central': 3.5,
+            'meningitis': 3.5,
+            'encefalitis': 3.5,
+            'fatiga': 2,
+            'malestar': 2,
+            'astenia': 2,
+            'cefalea': 1.7,
+            'linfadenopatía periférica': 3.5,
+            'adenopatías': 3.5,
+            'faringitis': 2.5,
+            'faringitis aguda': 2.5,
+            'alteraciones gastrointestinales': 2.8,
+            'diarrea': 2.8,
+            'mononucleosis': 4.8,
+            'síndrome mononucleósido': 4.8
+        }
 
-        points = 0
-        detected_symptoms = []
-        # Buscamos enfermedades definitorias de sida (Grupo 1)
+        matches = set()
+        for symptom_received in symptoms:
+            for indicator_symptom, score in indicators.items():
+                if indicator_symptom.lower() in symptom_received.lower():
+                    matches.add((indicator_symptom, score))
+                    break
+        return matches
+
+    def group7(self, symptoms, text):
+        indicators = {
+            'leucopenia': 3.3,
+            'trombopenia': 2.5,
+            'linfopenia <500': 0.7,
+            'hipergammaglobulinemia': 0.5
+        }
+
+        # Text checks for additional conditions not directly mentioned as symptoms
+        text_indicators = {
+            'leucocitos <3500 cel/ml': 'leucopenia',
+            'plaquetas <100000 cel/ml': 'trombopenia'
+        }
+
+        matches = []
+
+        # Check for symptoms directly
         for symptom in symptoms:
             if symptom in indicators:
-                detected_symptoms.append(symptom)
-                points += indicators[symptom]
-        return detected_symptoms, points
+                matches.append((symptom, indicators[symptom]))
 
-    def group7(symptoms, text):
-        detected_symptoms = []
-        points = 0
+        # Check for conditions described in the text
+        for text_condition, equivalent_symptom in text_indicators.items():
+            if text_condition in text and equivalent_symptom not in [symptom for symptom, _ in matches]:
+                matches.append((equivalent_symptom, indicators[equivalent_symptom]))
 
-        if 'leucopenia' in symptoms or 'leucocitos <3500 cel/ml' in text:
-            points += 3.3
-            detected_symptoms.append('leucopenia' if 'leucopenia' in symptoms else 'leucocitos <3500 cel/ml')
+        return matches
 
-        if 'trombopenia' in symptoms or 'plaquetas <100000 cel/ml' in text:
-            points += 2.5
-            detected_symptoms.append('trombopenia' if 'trombopenia' in symptoms else 'plaquetas <100000 cel/ml')
-
-        if 'linfopenia <500' in text:
-            points += 0.7
-            detected_symptoms.append('linfopenia <500')
-
-        if 'hipergammaglobulinemia' in symptoms:
-            points += 0.5
-            detected_symptoms.append('hipergammaglobulinemia')
-
-        return detected_symptoms, points
-
-    def group8(symptoms):
+    def group8(self, symptoms):
+        indicators = {
+            'hepatitis b': 4,
+            'hbsag +': 4,
+            'hepatitis c': 4.2,
+            'ac antivhc +': 4.2,
+            'serología lúes': 4.3,
+            'sífilis': 4.3,
+            'exudado rectal': 4.3,
+            'exudado uretral': 4.3,
+            'exudado cuello uterino positivo': 4.2,
+            'gonococo': 4.3,
+            'chlamydia': 4.3, 
+            'clamidia': 4.3
+        }
+        matches = set()
+        for symptom_received in symptoms:
+            for indicator_symptom, score in indicators.items():
+                if indicator_symptom.lower() in symptom_received.lower():
+                    matches.add((indicator_symptom, score))
+                    break
+        return matches
+    
+    def extract_vih_symptoms(self,symtomps, text):
         match = []
-        diseases = [
-        'hepatitis b', 'hbsag +',
-        'hepatitis c' , 'ac antivhc +',
-        'serología lúes','sífilis',
-        'exudado rectal positivo',
-        'exudado uretral positivo',
-        'exudado cuello uterino positivo',
-        'gonococo',
-        'chlamydia'
-    ]
-        for symptom in symptoms:
-            if symptom in diseases:
-                match.append(symptom)
+        match.extend(self.group1(symtomps)) # enfermedades definitorias de sida
+        match.extend(self.group2(symtomps)) # enfermedades indicadoras de sida
+        match.extend(self.group3(symtomps)) # otras engfermedades indicadoras de sida
+        match.extend(self.group6(symtomps)) # signos y síntomas de infección aguda por VIH
+        match.extend(self.group7(symtomps, text)) # signos y síntomas de infección aguda por VIH
+        match.extend(self.group8(symtomps)) # enfermedades de transmisión sexual
         return match
+
+    def score_group1(self, symptoms):
+        match = []
+        match.extend(self.group1(symptoms))
+        score = self.calculate_total_score(match)
+        return match, score
+    
+    def score_group2(self, symptoms):
+        match = []
+        match.extend(self.group2(symptoms))
+        score = self.calculate_total_score(match)
+        return match, score
+    
+    def score_group3(self, symptoms):
+        match = []
+        match.extend(self.group3(symptoms))
+        score = self.calculate_total_score(match)
+        return match, score
+    
+    def score_group6(self, symptoms):
+        match = []
+        match.extend(self.group6(symptoms))
+        score = self.calculate_total_score(match)
+        return match, score
+    
+    def score_group7(self, symptoms, text):
+        match = []
+        match.extend(self.group7(symptoms, text))
+        score = self.calculate_total_score(match)
+        return match, score 
+    
+    def score_group8(self, symptoms):
+        match = []
+        match.extend(self.group8(symptoms))
+        score = self.calculate_total_score(match)
+        return match, score
+    
+    def calculate_total_score(self, tuples_list):
+        """
+        Calculates the total score by summing the scores of each symptom.
+
+        :param tuples_list: List of tuples, where each tuple contains a symptom and its corresponding score.
+        :return: Total score as a float.
+        """
+        total_score = sum(score for symptom, score in tuples_list)
+        return total_score
             
     def detect_vih(self, text, symptoms): 
         text = text.lower()
-
         vih = 0
-        symptomsg1 = self.group1(symptoms) # enfermedades definitorias de sida
-        symptomsg2 = self.group2(symptoms) # enfermedades indicadoras de sida
-        symptomsg3 = self.group3(symptoms) # otras engfermedades indicadoras de sida
-        p4 = self.group4(text)
-        p5 = self.group5(text)
-        symptoms6, p6 = self.group6(symptoms) # signos y síntomas de infección aguda por VIH
-        symptoms7, p7 = self.group7(symptoms, text) # alteraciones de laboratorio
-        std = self.group8(symptoms) # enfermedades de transmisión sexual
+        vih_indicators = self.extract_vih_symptoms(symptoms, text)
+        print(f"vih_indicators: {vih_indicators}")
+        indicators_score = self.calculate_total_score(vih_indicators) # score estimated from symptoms (groups 1, 2, 3, 6, 7, 8)
+        print(f"indicators_score: {indicators_score}")
+        p4 = self.group4(text) # score estimated from sociodemographic indicators
+        print(f"sociodemographic: {p4}")
+        p5 = self.group5(text) # score estimated from country of origin
+        print(f"country: {p5}")
+
+        vih += indicators_score + p4 + p5 
         
-        symptons_filtered = symptomsg1 + symptomsg2 + symptomsg3 + symptoms6 + symptoms7 + std
-    
-        vih += p4 + p5 + p6 + p7
-        print(vih)
-        return vih >= 8
+        return vih >= 7, vih
