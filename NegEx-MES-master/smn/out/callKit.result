@@ -1,19 +1,29 @@
-0	deterioro de memoria	"Paciente de 38 años de edad que acude a revisión en Consultas de Enfermedades Infecciosas refiriendo deterioro de memoria en los dos últimos meses."	Affirmed	NONE
-1	ex-adicto a drogas por vía parenteral	"Se trata de un varón ex-adicto a drogas por vía parenteral, con infección por VIH (virus de inmunodeficiencia humana) en estadio C-3, conocida desde 7 años antes e ingresado en varias ocasiones por infecciones oportunistas (neumonía por Pneumocystis carinii, candidiasis orofaríngea severa) y cuadro convulsivo único."	Affirmed	NONE
-3	infecciones oportunistas	"Se trata de un varón ex-adicto a drogas por vía parenteral, con infección por VIH (virus de inmunodeficiencia humana) en estadio C-3, conocida desde 7 años antes e ingresado en varias ocasiones por infecciones oportunistas (neumonía por Pneumocystis carinii, candidiasis orofaríngea severa) y cuadro convulsivo único."	Affirmed	NONE
-4	neumonía por Pneumocystis carinii	"Se trata de un varón ex-adicto a drogas por vía parenteral, con infección por VIH (virus de inmunodeficiencia humana) en estadio C-3, conocida desde 7 años antes e ingresado en varias ocasiones por infecciones oportunistas (neumonía por Pneumocystis carinii, candidiasis orofaríngea severa) y cuadro convulsivo único."	Affirmed	NONE
-5	candidiasis orofaríngea	"Se trata de un varón ex-adicto a drogas por vía parenteral, con infección por VIH (virus de inmunodeficiencia humana) en estadio C-3, conocida desde 7 años antes e ingresado en varias ocasiones por infecciones oportunistas (neumonía por Pneumocystis carinii, candidiasis orofaríngea severa) y cuadro convulsivo único."	Affirmed	NONE
-6	cuadro convulsivo	"Se trata de un varón ex-adicto a drogas por vía parenteral, con infección por VIH (virus de inmunodeficiencia humana) en estadio C-3, conocida desde 7 años antes e ingresado en varias ocasiones por infecciones oportunistas (neumonía por Pneumocystis carinii, candidiasis orofaríngea severa) y cuadro convulsivo único."	Affirmed	NONE
-7	decaído	"Su esposa lo nota decaído, con falta de ánimo y de iniciativa para realizar cualquier actividad."	Affirmed	NONE
-8	signos meníngeos	"No signos meníngeos."	Negated	negPhrases
-9	paresias en movimientos oculares	"Lentitud de movimientos sacádicos oculares, sin paresias en movimientos oculares."	Negated	negPhrases
-10	paresia facial periférica izquierda	"Resto de pares craneales normales, salvo paresia facial periférica izquierda antigua."	Affirmed	NONE
-11	déficit motores	"No existen déficit motores en miembros."	Negated	negPhrases
-12	Hipoparestesia distal	"Hipoparestesia distal en miembros inferiores."	Affirmed	NONE
-13	dismetría	"No dismetría ni disdiadococinesia."	Negated	negPhrases
-14	disdiadococinesia	"No dismetría ni disdiadococinesia."	Negated	negPhrases
-15	Palidez cutáneo-mucosa	"Palidez cutáneo-mucosa."	Affirmed	NONE
-16	adenopatías	"No se palpan adenopatías en cadenas ganglionares cervicales, supraclaviculares, axilares ni inguinales."	Negated	negPhrases
-17	Boca	"Boca séptica."	Affirmed	NONE
-18	masas	"Abdomen blando, depresible, sin masas ni visceromegalias."	Negated	negPhrases
-19	visceromegalias	"Abdomen blando, depresible, sin masas ni visceromegalias."	Negated	negPhrases
+0	síndrome de inmunodeficiencia adquirida	"Paciente masculino de 33 años de edad, natural y procedente de la ciudad de Caracas, en tratamiento por síndrome de inmunodeficiencia adquirida con efavirenz ? zidovudina + 3TC, quien refiere mareos frecuentes y desvanecimientos ocasionales"	Affirmed	NONE
+1	mareos	"Paciente masculino de 33 años de edad, natural y procedente de la ciudad de Caracas, en tratamiento por síndrome de inmunodeficiencia adquirida con efavirenz ? zidovudina + 3TC, quien refiere mareos frecuentes y desvanecimientos ocasionales"	Affirmed	NONE
+2	desvanecimientos	"Paciente masculino de 33 años de edad, natural y procedente de la ciudad de Caracas, en tratamiento por síndrome de inmunodeficiencia adquirida con efavirenz ? zidovudina + 3TC, quien refiere mareos frecuentes y desvanecimientos ocasionales"	Affirmed	NONE
+3	congestión	"Desde hace dos años presenta congestión y dolor nasal, acompañados por rinorrea mucopurulenta, que en oportunidades es sanguinolenta y fétida así como dificultad para inhalar aire por la nariz"	Affirmed	NONE
+4	dolor nasal	"Desde hace dos años presenta congestión y dolor nasal, acompañados por rinorrea mucopurulenta, que en oportunidades es sanguinolenta y fétida así como dificultad para inhalar aire por la nariz"	Affirmed	NONE
+5	rinorrea mucopurulenta	"Desde hace dos años presenta congestión y dolor nasal, acompañados por rinorrea mucopurulenta, que en oportunidades es sanguinolenta y fétida así como dificultad para inhalar aire por la nariz"	Affirmed	NONE
+6	dificultad	"Desde hace dos años presenta congestión y dolor nasal, acompañados por rinorrea mucopurulenta, que en oportunidades es sanguinolenta y fétida así como dificultad para inhalar aire por la nariz"	Affirmed	NONE
+7	sinusitis	"Recibe tratamiento como sinusitis crónica sin mejorar la sintomatología, la cual se acentúa en los últimos seis meses, con pérdida de peso no cuantificada, así como disfagia y odinofagia"	Affirmed	NONE
+8	sintomatología	"Recibe tratamiento como sinusitis crónica sin mejorar la sintomatología, la cual se acentúa en los últimos seis meses, con pérdida de peso no cuantificada, así como disfagia y odinofagia"	Negated	negPhrases
+9	pérdida de peso	"Recibe tratamiento como sinusitis crónica sin mejorar la sintomatología, la cual se acentúa en los últimos seis meses, con pérdida de peso no cuantificada, así como disfagia y odinofagia"	Negated	negPhrases
+10	disfagia	"Recibe tratamiento como sinusitis crónica sin mejorar la sintomatología, la cual se acentúa en los últimos seis meses, con pérdida de peso no cuantificada, así como disfagia y odinofagia"	Negated	negPhrases
+11	odinofagia	"Recibe tratamiento como sinusitis crónica sin mejorar la sintomatología, la cual se acentúa en los últimos seis meses, con pérdida de peso no cuantificada, así como disfagia y odinofagia"	Negated	negPhrases
+12	lesión pápulonodular dolorosa	"Presentó una lesión pápulonodular dolorosa en el paladar blando que aumentó progresivamente de tamaño"	Affirmed	NONE
+13	rinorrea	"Desde hace dos años presenta congestión y dolor nasal, acompañados por rinorrea mucopurulenta, que en oportunidades es sanguinolenta y fétida así como dificultad para inhalar aire por la nariz"	Affirmed	NONE
+14	Leishmaniosis cutánea	"Leishmaniosis cutánea diagnosticada hace 7 años localizada en la región escapular izquierda, cicatrizada espontáneamente sin tratamiento, luego de un año de evolución"	Affirmed	NONE
+15	palidez cutáneomucosa	"Examen físico: paciente en aparentes buenas condiciones generales, piel morena clara con palidez cutáneomucosa acentuada"	Affirmed	NONE
+16	lesiones cicatrizadas	"Presenta dos lesiones cicatrizadas redondeadas de 15 y 10 cm de diámetro, más claras que el resto de la piel y de bordes bien definidos"	Affirmed	NONE
+17	Nariz	"Desde hace dos años presenta congestión y dolor nasal, acompañados por rinorrea mucopurulenta, que en oportunidades es sanguinolenta y fétida así como dificultad para inhalar aire por la nariz"	Affirmed	NONE
+18	lesión pápulo-ulcerosa	"Nariz aumentada de tamaño hacia la base de la pirámide nasal, con lesión pápulo-ulcerosa izquierda, elevada, de bordes indefinidos, descamativa, extendida a la fosa nasal izquierda, no dolorosa pero sangrante al tacto"	Affirmed	NONE
+19	descama	"Nariz aumentada de tamaño hacia la base de la pirámide nasal, con lesión pápulo-ulcerosa izquierda, elevada, de bordes indefinidos, descamativa, extendida a la fosa nasal izquierda, no dolorosa pero sangrante al tacto"	Affirmed	NONE
+20	dolorosa	"Presentó una lesión pápulonodular dolorosa en el paladar blando que aumentó progresivamente de tamaño"	Affirmed	NONE
+21	sangrante	"Nariz aumentada de tamaño hacia la base de la pirámide nasal, con lesión pápulo-ulcerosa izquierda, elevada, de bordes indefinidos, descamativa, extendida a la fosa nasal izquierda, no dolorosa pero sangrante al tacto"	Negated	conjunctions
+22	Adenomegalias	"Adenomegalias movibles no adheridas a planos profundos, en número de tres en la región submentoniana y lateral del cuello"	Affirmed	NONE
+23	lesiones clínicas	"Respiratorio, cardiovascular, digestivo, genito urinario y neurológico sin lesiones clínicas evidentes"	Negated	negPhrases
+24	tumefacción	"La tomografía computarizada de la nariz reveló tumefacción del septum nasal blando, especialmente del lado derecho, con área inflamatoria sugestiva de un componente infeccioso granulomatoso, sin velamiento de las cavidades aéreas"	Affirmed	NONE
+25	área	"La tomografía computarizada de la nariz reveló tumefacción del septum nasal blando, especialmente del lado derecho, con área inflamatoria sugestiva de un componente infeccioso granulomatoso, sin velamiento de las cavidades aéreas"	Affirmed	NONE
+26	inflamatoria	"La tomografía computarizada de la nariz reveló tumefacción del septum nasal blando, especialmente del lado derecho, con área inflamatoria sugestiva de un componente infeccioso granulomatoso, sin velamiento de las cavidades aéreas"	Affirmed	NONE
+27	infeccioso granulomatoso	"La tomografía computarizada de la nariz reveló tumefacción del septum nasal blando, especialmente del lado derecho, con área inflamatoria sugestiva de un componente infeccioso granulomatoso, sin velamiento de las cavidades aéreas"	Affirmed	NONE
+28	velamiento	"La tomografía computarizada de la nariz reveló tumefacción del septum nasal blando, especialmente del lado derecho, con área inflamatoria sugestiva de un componente infeccioso granulomatoso, sin velamiento de las cavidades aéreas"	Negated	negPhrases

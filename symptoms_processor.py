@@ -7,6 +7,7 @@ class SymptomsProcessor:
     
     def group1(self, symptoms):
         indicators = {
+            'sindrome de inmunodeficiencia adquirida': 5.0,
             'neumonía recurrente': 4.2,
             'bacteriemia recurrente por salmonella': 4.5,
             'tuberculosis pulmonar': 4.5,
@@ -146,7 +147,7 @@ class SymptomsProcessor:
         return points
 
     def group5(self, text):
-        nlp = spacy.load("es_core_news_sm")
+        nlp = self.nlp
         # Aplicar el ner al texto
         doc = nlp(text)
         country = ""
@@ -249,8 +250,8 @@ class SymptomsProcessor:
 
         # Text checks for additional conditions not directly mentioned as symptoms
         text_indicators = {
-            'leucocitos <3500 cel/ml': 'leucopenia',
-            'plaquetas <100000 cel/ml': 'trombopenia'
+            'leucocitos': 'leucopenia',  
+            'plaquetas': 'trombopenia' 
         }
 
         matches = []
@@ -262,8 +263,17 @@ class SymptomsProcessor:
 
         # Check for conditions described in the text
         for text_condition, equivalent_symptom in text_indicators.items():
-            if text_condition in text and equivalent_symptom not in [symptom for symptom, _ in matches]:
-                matches.append((equivalent_symptom, indicators[equivalent_symptom]))
+            # Uso de regex para encontrar y comparar el número específico mencionado
+            regex_pattern = fr'{text_condition}\s*<\s*(\d+)\s*cel/ml'
+            match = re.search(regex_pattern, text, re.IGNORECASE)
+            if match:
+                count = int(match.group(1))
+                if text_condition == 'leucocitos' and count < 3500:
+                    if equivalent_symptom not in [symptom for symptom, _ in matches]:
+                        matches.append((equivalent_symptom, indicators[equivalent_symptom]))
+                elif text_condition == 'plaquetas' and count < 100000:
+                    if equivalent_symptom not in [symptom for symptom, _ in matches]:
+                        matches.append((equivalent_symptom, indicators[equivalent_symptom]))
 
         return matches
 
@@ -292,9 +302,17 @@ class SymptomsProcessor:
     
     def extract_vih_symptoms(self,symtomps, text):
         match = []
-        match.extend(self.group1(symtomps)) # enfermedades definitorias de sida
+        # Revisar primero si hay indicadores en group3
+        group3_matches = self.group3(symtomps)
+        if group3_matches:
+            # Si hay indicadores en group3, retornar una lista vacía
+            return match
+        
+        #match.extend(self.group1(symtomps)) # enfermedades definitorias de sida
+        match.extend((indicator, score * 2) for indicator, score in self.group1(symtomps))
         match.extend(self.group2(symtomps)) # enfermedades indicadoras de sida
-        match.extend(self.group3(symtomps)) # otras engfermedades indicadoras de sida
+        #match.extend(self.group3(symtomps)) # otras engfermedades indicadoras de sida
+        
         match.extend(self.group6(symtomps)) # signos y síntomas de infección aguda por VIH
         match.extend(self.group7(symtomps, text)) # signos y síntomas de infección aguda por VIH
         match.extend(self.group8(symtomps)) # enfermedades de transmisión sexual
@@ -346,18 +364,13 @@ class SymptomsProcessor:
         total_score = sum(score for symptom, score in tuples_list)
         return total_score
             
-    def detect_vih(self, text, symptoms): 
+    def detect_vih(self, text, symptoms, threshold): 
         text = text.lower()
         vih = 0
         vih_indicators = self.extract_vih_symptoms(symptoms, text)
-        print(f"vih_indicators: {vih_indicators}")
         indicators_score = self.calculate_total_score(vih_indicators) # score estimated from symptoms (groups 1, 2, 3, 6, 7, 8)
-        print(f"indicators_score: {indicators_score}")
         p4 = self.group4(text) # score estimated from sociodemographic indicators
-        print(f"sociodemographic: {p4}")
         p5 = self.group5(text) # score estimated from country of origin
-        print(f"country: {p5}")
 
-        vih += indicators_score + p4 + p5 
-        
-        return vih >= 7, vih
+        vih += indicators_score + p4 * 0.5 + p5 
+        return vih >= threshold, vih

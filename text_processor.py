@@ -9,15 +9,23 @@ class TextProcessor:
     def get_text_from_file(self, path, number):
         """
         Obtiene el texto del primer fichero de una carpeta.
-
+        
         :param path: Ruta de la carpeta que contiene los archivos.
         :param number: Número del archivo a leer (empezando desde 0).
         :return: Texto leído del archivo especificado.
         """
         files = os.listdir(path)
-        with open(os.path.join(path, files[number]), 'r', encoding='utf-8') as f:
-            text = f.read()
-        return text
+        # Asegúrate de que el índice no exceda el número de archivos disponibles
+        if number < len(files):
+            file_name = files[number]
+            
+            file_path = os.path.join(path, file_name)
+            with open(file_path, 'r', encoding='utf-8') as f:
+                text = f.read()
+            return text
+        else:
+            print(f"No hay suficientes archivos en el directorio. Intentando leer archivo número {number} en un directorio con {len(files)} archivos.")
+            return ""  # Devuelve una cadena vacía si el índice está fuera de rango
         
     def extract_symptoms(self, text):
         """

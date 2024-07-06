@@ -12,9 +12,15 @@ class NegEx:
         """
         Recognizes sentences containing the symptom within the text.
         """
-        pattern = r"([^.|\n]*" + re.escape(symptom) + "[^.|\n]*(?:\.|\n))"
+        pattern = r"([^.|\n]*" + re.escape(symptom) + r"[^.|\n]*)(?:\.|\n)"
         match = re.search(pattern, text, re.IGNORECASE)
-        return match.group(1).strip() if match else ""
+        if match:
+            sentence = match.group(1).strip()
+            # Comprueba si existe una negación después de la lista de síntomas
+            if "negativo" in sentence:
+                return ""
+            return sentence
+        return ""
 
     def prepare_input_file(self, symptoms, text):
         """
